@@ -21,6 +21,8 @@ public class QuestionNo3b extends JPanel {
     private int level = 1;
     private boolean isGameOver = false;
 
+    
+
     public QuestionNo3b() {
         setPreferredSize(new Dimension(COLS * CELL_SIZE, ROWS * CELL_SIZE));
         setBackground(Color.BLACK);
@@ -71,13 +73,13 @@ public class QuestionNo3b extends JPanel {
     }
 
     private void rotate() {
-        int[][] rotatedShape = rotateMatrix(currentBlock.shape);
-        if (isValidPosition(currentBlock.x, currentBlock.y, rotatedShape)) {
-            currentBlock.shape = rotatedShape;
-            repaint();
-        }
+    int[][] rotatedShape = rotateMatrix(currentBlock.shape);
+    if (isValidPosition(currentBlock.x, currentBlock.y, rotatedShape)) {
+        currentBlock.shape = rotatedShape;
+        repaint();
     }
-    
+}
+
     
 
 
