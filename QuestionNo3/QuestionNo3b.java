@@ -21,6 +21,21 @@ public class QuestionNo3b extends JPanel {
     private int level = 1;
     private boolean isGameOver = false;
 
+
+    private int[][] rotateMatrix(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int[][] rotated = new int[cols][rows];
+    
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                rotated[j][rows - 1 - i] = matrix[i][j];
+            }
+        }
+        return rotated;
+    }
+    
+
     
 
     public QuestionNo3b() {
