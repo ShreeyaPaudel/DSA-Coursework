@@ -38,12 +38,19 @@ public class QuestionNo4a {
     public static void main(String[] args) {
         // Example tweet dataset (tweet ID, hashtag)
         String[][] tweets = {
-            {"1", "#TechLife"},
-            {"2", "#HappyDay"},
+            {"1", "#UniLife"},
+            {"2", "#HappyFlowerDay"},
             {"3", "#WorkLife"},
-            {"4", "#TechLife"},
-            {"5", "#HappyDay"},
-            {"6", "#HappyDay"}
+            {"4", "#UniLife"},
+            {"5", "#HappyFlowerDay"},
+            {"6", "#HappyChocolateDay"},
+            {"7", "#UniLife"},
+            {"8", "#UniLife"},
+            {"9", "#WorkLife"},
+            {"10", "#HappyFlowerDay"},
+            
+
+
         };
 
         System.out.println(getTopTrendingHashtags(tweets));
