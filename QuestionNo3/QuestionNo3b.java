@@ -12,6 +12,7 @@ public class QuestionNo3b extends JPanel {
     private static final int ROWS = 20;
     private static final int COLS = 10;
     private static final int CELL_SIZE = 30;
+    private static final int PREVIEW_SIZE = 4; // Size of the preview block
 
     private String[][] board = new String[ROWS][COLS];
     private Queue<Block> blockQueue = new LinkedList<>();
@@ -21,12 +22,11 @@ public class QuestionNo3b extends JPanel {
     private int level = 1;
     private boolean isGameOver = false;
 
-
     private int[][] rotateMatrix(int[][] matrix) {
         int rows = matrix.length;
         int cols = matrix[0].length;
         int[][] rotated = new int[cols][rows];
-    
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 rotated[j][rows - 1 - i] = matrix[i][j];
@@ -34,12 +34,9 @@ public class QuestionNo3b extends JPanel {
         }
         return rotated;
     }
-    
-
-    
 
     public QuestionNo3b() {
-        setPreferredSize(new Dimension(COLS * CELL_SIZE, ROWS * CELL_SIZE));
+        setPreferredSize(new Dimension(COLS * CELL_SIZE + 150, ROWS * CELL_SIZE));  // Added extra space for preview
         setBackground(Color.BLACK);
         initializeBoard();
         generateNewBlock();
@@ -59,9 +56,11 @@ public class QuestionNo3b extends JPanel {
     }
 
     private void generateNewBlock() {
-        int[][] shape = getRandomShape();
-        currentBlock = new Block(shape, getRandomColor());
-        blockQueue.add(currentBlock);
+        if (blockQueue.isEmpty()) {
+            blockQueue.add(new Block(getRandomShape(), getRandomColor()));
+        }
+        currentBlock = blockQueue.poll();
+        blockQueue.add(new Block(getRandomShape(), getRandomColor()));
     }
 
     private void gameLoop() {
@@ -79,25 +78,6 @@ public class QuestionNo3b extends JPanel {
         }
         repaint();
     }
-
-    private void move(int dx) {
-        if (isValidPosition(currentBlock.x, currentBlock.y + dx, currentBlock.shape)) {
-            currentBlock.y += dx;
-            repaint();
-        }
-    }
-
-    private void rotate() {
-    int[][] rotatedShape = rotateMatrix(currentBlock.shape);
-    if (isValidPosition(currentBlock.x, currentBlock.y, rotatedShape)) {
-        currentBlock.shape = rotatedShape;
-        repaint();
-    }
-}
-
-    
-
-
 
     private boolean moveDown() {
         if (isValidPosition(currentBlock.x + 1, currentBlock.y, currentBlock.shape)) {
@@ -140,39 +120,35 @@ public class QuestionNo3b extends JPanel {
         return copy;
     }
 
-    private void checkRows() {
-        for (int i = 0; i < ROWS; i++) {
-            boolean fullRow = true;
-            for (int j = 0; j < COLS; j++) {
-                if (board[i][j].equals("empty")) {
-                    fullRow = false;
-                    break;
-                }
-            }
-            if (fullRow) {
-                removeRow(i);
-                score += 10;
-                if (score % 50 == 0) level++;
-            }
-        }
-    }
-
-    private void removeRow(int row) {
-        for (int i = row; i > 0; i--) {
-            System.arraycopy(board[i - 1], 0, board[i], 0, COLS);
-        }
-        for (int j = 0; j < COLS; j++) {
-            board[0][j] = "empty";
-        }
-    }
-
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        // Draw the main game board
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 if (!board[i][j].equals("empty")) {
                     g.setColor(Color.decode(board[i][j]));
                     g.fillRect(j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
+            }
+        }
+
+        // Draw the preview block
+        drawPreviewBlock(g);
+    }
+
+    private void drawPreviewBlock(Graphics g) {
+        Block previewBlock = blockQueue.peek();  // Get the next block in the queue
+        int[][] shape = previewBlock.shape;
+        String color = previewBlock.color;
+
+        g.setColor(Color.decode(color));
+
+        // Draw the preview block in a small area
+        for (int i = 0; i < shape.length; i++) {
+            for (int j = 0; j < shape[i].length; j++) {
+                if (shape[i][j] != 0) {
+                    g.fillRect((COLS * CELL_SIZE) + (j * CELL_SIZE), i * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }
             }
         }
@@ -189,11 +165,11 @@ public class QuestionNo3b extends JPanel {
 
     private int[][] getRandomShape() {
         int[][][] shapes = {
-            {{1, 1, 1}, {0, 1, 0}},  // T-shape
-            {{1, 1}, {1, 1}},  // Square
-            {{1, 1, 1, 1}},  // Line
-            {{1, 0, 0}, {1, 1, 1}},  // L-shape
-            {{0, 0, 1}, {1, 1, 1}}   // Reverse L-shape
+            {{1, 1, 1}, {0, 1, 0}},
+            {{1, 1}, {1, 1}},
+            {{1, 1, 1, 1}},
+            {{1, 0, 0}, {1, 1, 1}},
+            {{0, 0, 1}, {1, 1, 1}}
         };
         return shapes[new Random().nextInt(shapes.length)];
     }
@@ -213,7 +189,6 @@ public class QuestionNo3b extends JPanel {
     }
 }
 
-// Block Class for Tetris Pieces
 class Block {
     int[][] shape;
     String color;
