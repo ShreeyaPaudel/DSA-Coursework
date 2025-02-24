@@ -112,7 +112,7 @@ public class QuestionNo5 extends JFrame {
 }
 
 class Graph {
-    private Map<String, List<Edge>> adjList = new HashMap<>();
+    private Map<String, java.util.List<Edge>> adjList = new HashMap<>();
 
     public void addNode(String node) {
         adjList.putIfAbsent(node, new ArrayList<>());
