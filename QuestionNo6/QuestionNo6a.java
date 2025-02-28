@@ -1,16 +1,71 @@
 package QuestionNo6;
 
 class NumberPrinter {
-    public synchronized void printZero() {
+    public void printZero() {
         System.out.print("0");
     }
 
-    public synchronized void printEven(int number) {
+    public void printEven(int number) {
         System.out.print(number);
     }
 
-    public synchronized void printOdd(int number) {
+    public void printOdd(int number) {
         System.out.print(number);
+    }
+}
+
+class ThreadController {
+    private final int maxCount;
+    private int count = 1; // Start with 1 since 0 is always printed first
+    private int turn = 0; // 0 -> ZeroThread, 1 -> OddThread, 2 -> EvenThread
+
+    public ThreadController(int maxCount) {
+        this.maxCount = maxCount;
+    }
+
+    public synchronized void printZero(NumberPrinter printer) {
+        for (int i = 0; i < maxCount; i++) {
+            while (turn != 0) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            printer.printZero();
+            turn = (count % 2 == 0) ? 2 : 1; // Switch turn to OddThread or EvenThread
+            notifyAll();
+        }
+    }
+
+    public synchronized void printOdd(NumberPrinter printer) {
+        while (count <= maxCount) {
+            while (turn != 1) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            printer.printOdd(count++);
+            turn = 0; // Switch back to ZeroThread
+            notifyAll();
+        }
+    }
+
+    public synchronized void printEven(NumberPrinter printer) {
+        while (count <= maxCount) {
+            while (turn != 2) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            printer.printEven(count++);
+            turn = 0; // Switch back to ZeroThread
+            notifyAll();
+        }
     }
 }
 
@@ -25,45 +80,7 @@ class ZeroThread extends Thread {
 
     @Override
     public void run() {
-        synchronized (controller) {
-            printer.printZero();
-            controller.incrementCount();
-            controller.notifyAll(); // Notify other threads
-        }
-    }
-}
-
-class EvenThread extends Thread {
-    private final NumberPrinter printer;
-    private final ThreadController controller;
-
-    public EvenThread(NumberPrinter printer, ThreadController controller) {
-        this.printer = printer;
-        this.controller = controller;
-    }
-
-    @Override
-    public void run() {
-        synchronized (controller) {
-            while (controller.getCount() <= controller.getMaxCount()) {
-                if (controller.getCount() % 2 == 0) {
-                    printer.printEven(controller.getCount());
-                    controller.incrementCount();
-                    controller.notifyAll(); // Notify other threads
-                    try {
-                        controller.wait(); // Wait for turn to print next
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        controller.wait(); // Wait until it's even number's turn
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        controller.printZero(printer);
     }
 }
 
@@ -78,73 +95,37 @@ class OddThread extends Thread {
 
     @Override
     public void run() {
-        synchronized (controller) {
-            while (controller.getCount() <= controller.getMaxCount()) {
-                if (controller.getCount() % 2 != 0) {
-                    printer.printOdd(controller.getCount());
-                    controller.incrementCount();
-                    controller.notifyAll(); // Notify other threads
-                    try {
-                        controller.wait(); // Wait for turn to print next
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        controller.wait(); // Wait until it's odd number's turn
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        controller.printOdd(printer);
     }
 }
 
-class ThreadController {
-    private int count = 0;
-    private final int maxCount;
+class EvenThread extends Thread {
+    private final NumberPrinter printer;
+    private final ThreadController controller;
 
-    public ThreadController(int n) {
-        this.maxCount = n;
+    public EvenThread(NumberPrinter printer, ThreadController controller) {
+        this.printer = printer;
+        this.controller = controller;
     }
 
-    public synchronized void incrementCount() {
-        count++;
-    }
-
-    public synchronized int getCount() {
-        return count;
-    }
-
-    public synchronized int getMaxCount() {
-        return maxCount;
-    }
-
-    public void startThreads() {
-        NumberPrinter printer = new NumberPrinter();
-        ZeroThread zeroThread = new ZeroThread(printer, this);
-        EvenThread evenThread = new EvenThread(printer, this);
-        OddThread oddThread = new OddThread(printer, this);
-
-        zeroThread.start();
-        evenThread.start();
-        oddThread.start();
-
-        try {
-            zeroThread.join();
-            evenThread.join();
-            oddThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void run() {
+        controller.printEven(printer);
     }
 }
 
 public class QuestionNo6a {
     public static void main(String[] args) {
-        int n = 5; 
+        int n = 3;
+        NumberPrinter printer = new NumberPrinter();
         ThreadController controller = new ThreadController(n);
-        controller.startThreads();
+
+        ZeroThread zeroThread = new ZeroThread(printer, controller);
+        OddThread oddThread = new OddThread(printer, controller);
+        EvenThread evenThread = new EvenThread(printer, controller);
+
+        zeroThread.start();
+        oddThread.start();
+        evenThread.start();
     }
 }
