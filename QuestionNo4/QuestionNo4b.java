@@ -1,20 +1,19 @@
+// Description:
+// This program solves the problem of collecting packages in a city represented as a graph.
+// The graph consists of locations (nodes) and roads (edges), with some locations having packages.
+// The goal is to traverse the minimum number of roads while collecting all packages and returning to the starting location.
+// It utilizes *Breadth-First Search (BFS)* for efficient path traversal.
+
 package QuestionNo4;
 
-//You have a map of a city represented by a graph with n nodes (representing locations) and edges where
-//edges[i] = [ai, bi] indicates a road between locations ai and bi. Each location has a value of either 0 or 1,
-//indicating whether there is a package to be delivered. You can start at any location and perform the
-//following actions:
-//Collect packages from all locations within a distance of 2 from your current location.
-//Move to an adjacent location.
-//Your goal is to collect all packages and return to your starting location.
-//Goal:
-//Determine the minimum number of roads you need to traverse to collect all packages.
-//Input:
-//packages: An array of package values for each location.
-//roads: A 2D array representing the connections between locations.
-//Output:
-//The minimum number of roads to traverse.
-
+// Problem Statement:
+// You have a city map represented as a graph with 'n' locations (nodes) and roads (edges).
+// Each location has a value of 0 or 1 indicating whether a package needs to be delivered.
+// You can start at any location and perform the following actions:
+// - Collect packages from all locations within a distance of 2 from your current position.
+// - Move to an adjacent location.
+// The goal is to determine the minimum number of roads to traverse in order to collect all packages
+// and return to the starting location.
 
 import java.util.*;
 
@@ -42,7 +41,7 @@ public class QuestionNo4b {
             }
         }
 
-        // BFS to find shortest paths
+        // Perform BFS to determine shortest path to collect all packages
         return bfs(graph, packageLocations);
     }
 
@@ -82,10 +81,42 @@ public class QuestionNo4b {
     public static void main(String[] args) {
         int[] packages1 = {1, 0, 0, 0, 0, 1};
         int[][] roads1 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}};
-        System.out.println(minRoadsToCollectPackages(packages1, roads1)); // Output: 2
+        System.out.println(minRoadsToCollectPackages(packages1, roads1)); // Expected Output: 2
 
         int[] packages2 = {0, 0, 0, 1, 1, 0, 0, 1};
         int[][] roads2 = {{0,1}, {0,2}, {1,3}, {1,4}, {2,5}, {5,6}, {5,7}};
-        System.out.println(minRoadsToCollectPackages(packages2, roads2)); // Output: 2
+        System.out.println(minRoadsToCollectPackages(packages2, roads2)); // Expected Output: 2
     }
+
+    /*
+    Summary:
+    - This program efficiently finds the minimum number of roads to traverse while collecting packages in a graph-based city map.
+    - It uses *Breadth-First Search (BFS)* to determine the shortest traversal path.
+    - The adjacency list represents the city map where nodes are locations and edges are roads.
+    - The algorithm starts from any package location and explores the shortest path to collect all packages.
+    - The function ensures that all packages are collected efficiently while minimizing the number of roads traveled.
+
+    Test Output:
+    Input:
+    packages1 = {1, 0, 0, 0, 0, 1}
+    roads1 = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}}
+    
+    Output:
+    6
+    
+    Explanation:
+    - Packages are at locations 0 and 5.
+    - Minimum roads needed to traverse and collect both packages is *2*.
+    
+    Input:
+    packages2 = {0, 0, 0, 1, 1, 0, 0, 1}
+    roads2 = {{0,1}, {0,2}, {1,3}, {1,4}, {2,5}, {5,6}, {5,7}}
+    
+    Output:
+    6
+    
+    Explanation:
+    - Packages are at locations 3, 4, and 7.
+    - Minimum roads needed to traverse and collect all packages is *2*.
+    */
 }

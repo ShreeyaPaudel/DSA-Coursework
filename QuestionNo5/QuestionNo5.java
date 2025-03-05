@@ -1,3 +1,15 @@
+// Description:
+// This program is a *Network Optimizer* that helps optimize network connections between nodes.
+// It allows users to:
+// - *Add nodes* to the network.
+// - *Connect nodes* with edges that have cost and bandwidth.
+// - *Find the shortest path* between two nodes using *Dijkstra's Algorithm*.
+// - *Optimize network cost* using *Minimum Spanning Tree (MST)* with *Prim's Algorithm*.
+//
+// The program provides a graphical user interface (GUI) built with *Java Swing* to manage and analyze networks.
+
+
+
 package QuestionNo5;
 
 import javax.swing.*;
@@ -174,3 +186,10 @@ class Edge {
         this.bandwidth = bandwidth;
     }
 }
+
+// Summary:
+// - This program helps manage and optimize networks by providing a GUI for adding nodes and edges.
+// - *Prim’s Algorithm* is used to find the *Minimum Spanning Tree (MST)* for network cost optimization.
+// - *Dijkstra's Algorithm* is implemented to determine the *shortest path* between two nodes.
+// - The GUI allows users to interactively build and analyze network structures.
+// - Outputs are displayed in a text area, showing added nodes, edges, shortest paths, and optimized network costs.
