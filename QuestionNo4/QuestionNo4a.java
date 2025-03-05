@@ -48,11 +48,10 @@ public class QuestionNo4a {
             {"8", "#UniLife"},
             {"9", "#WorkLife"},
             {"10", "#HappyFlowerDay"},
-            
-
 
         };
 
         System.out.println(getTopTrendingHashtags(tweets));
     }
 }
+/* */
